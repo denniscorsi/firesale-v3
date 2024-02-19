@@ -1,6 +1,6 @@
 {
   "name": "firesale-v3",
-  "productName": "Firesale",
+  "productName": "Denny Firesale",
   "version": "1.0.0",
   "description": "A simple Markdown editor built with Electron and Vite.",
   "main": ".vite/build/main.js",
