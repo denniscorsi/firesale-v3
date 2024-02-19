@@ -1,4 +1,12 @@
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  shell,
+  Menu,
+  MenuItemConstructorOptions,
+} from 'electron';
 import { join, basename } from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
@@ -35,7 +43,7 @@ const getCurrentFile = async (browserWindow: BrowserWindow) => {
   return showSaveDialog(browserWindow);
 };
 
-const createWindow = () => {
+const createWindow = (): BrowserWindow => {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
@@ -60,6 +68,8 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools({
     mode: 'detach',
   });
+
+  return mainWindow;
 };
 
 app.on('ready', createWindow);
@@ -176,3 +186,35 @@ ipcMain.on('open-in-default', () => {
     shell.openPath(currentFile.filePath);
   }
 });
+
+const template: MenuItemConstructorOptions[] = [
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'open',
+        click: () => {
+          let browserWindow = BrowserWindow.getFocusedWindow();
+          if (!browserWindow) browserWindow = createWindow();
+          showOpenDialog(browserWindow);
+        },
+        accelerator: 'CmdOrCtrl+O',
+      },
+    ],
+  },
+  {
+    label: 'Edit',
+    role: 'editMenu',
+  },
+];
+
+// MacOS automatically replaces your first element with the app name, so you need to do this to not overwrite what you made as the first
+if (process.platform === 'darwin') {
+  template.unshift({
+    label: app.name,
+    role: 'appMenu',
+  });
+}
+const menu = Menu.buildFromTemplate(template);
+
+Menu.setApplicationMenu(menu);
