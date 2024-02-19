@@ -7,6 +7,10 @@ type markdownFile = {
   filePath?: string;
 };
 
+const hasChanges = (content: string) => {
+  return currentFile.content != content;
+};
+
 let currentFile: markdownFile = {
   content: '',
   filePath: undefined,
@@ -148,4 +152,11 @@ ipcMain.on('new-file', (event) => {
   const browserWindow = BrowserWindow.fromWebContents(event.sender)!;
 
   setCurrentFile(browserWindow, '', '');
+});
+
+ipcMain.handle('has-changes', async (event, content: string) => {
+  const changed = hasChanges(content);
+  const browserWindow = BrowserWindow.fromWebContents(event.sender);
+  browserWindow?.setDocumentEdited(changed);
+  return changed;
 });

@@ -20,4 +20,9 @@ contextBridge.exposeInMainWorld('api', {
   newFile: () => {
     ipcRenderer.send('new-file');
   },
+  checkForUnsavedChanges: async (content: string) => {
+    const result = await ipcRenderer.invoke('has-changes', content);
+    console.log({ result });
+    return result;
+  },
 });

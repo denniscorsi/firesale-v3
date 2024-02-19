@@ -4,6 +4,8 @@ import Elements from './elements';
 Elements.MarkdownView.addEventListener('input', async () => {
   const markdown = Elements.MarkdownView.value;
   renderMarkdown(markdown);
+  const hasChanged = await window.api.checkForUnsavedChanges(markdown);
+  Elements.SaveMarkdownButton.disabled = !hasChanged;
 });
 
 Elements.OpenFileButton.addEventListener('click', () => {
