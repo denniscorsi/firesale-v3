@@ -25,4 +25,14 @@ contextBridge.exposeInMainWorld('api', {
     console.log({ result });
     return result;
   },
+  revert: async () => {
+    const pastContent = await ipcRenderer.invoke('revert');
+    return pastContent;
+  },
+  showInFolder: () => {
+    ipcRenderer.send('show-in-folder');
+  },
+  openInDefault: () => {
+    ipcRenderer.send('open-in-default');
+  },
 });
